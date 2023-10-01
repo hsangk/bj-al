@@ -1,22 +1,25 @@
+from collections import deque
+
+
 def solution(sequence, k):
-    answers = []
+    answer = []
+    sequence += [0]
+
+    q = deque()
     sum = 0
-    l = 0
-    r = -1
-    
-    while True:
-        if sum < k:
-            r += 1
-            if r >= len(sequence):
-                break
-            sum += sequence[r]
-        else:
-            sum -= sequence[l]
-            if l >= len(sequence):
-                break
-            l += 1
-        if sum == k:
-            answers.append([l, r])
-    
-    answers.sort(key=lambda x: (x[1]-x[0], x[0]))
-    return answers[0]
+    start, end = 0, 0
+    result = len(sequence)
+    for i in range(len(sequence)):
+        while sum > k:
+            temp = q.popleft()
+            sum -= temp
+            start += 1
+        if sum == k and end - start < result:
+            answer = [start, end]
+            result = end - start
+
+        q.append(sequence[i])
+        sum += sequence[i]
+        end = i
+
+    return answer
