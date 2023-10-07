@@ -25,4 +25,3 @@ def solution(files):
     num = sorted(num, key=lambda x:(x[0].lower(), int(x[1])))
     num = [x[2] for x in num]
     return num
-
