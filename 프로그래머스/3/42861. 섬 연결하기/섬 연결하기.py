@@ -1,52 +1,26 @@
-from collections import deque
+import heapq as hq
 
 def solution(n, costs):
     answer = 0
+    from_to = list(list() for _ in range(n))
+    visited = [False] * n
+    priority = []
 
-    graph = {}
-    for i in range(0,n):
-        graph[i] = []
-    print(graph)
-    costs = sorted(costs, key = lambda x : x[-1])
-    #print(costs)
+    for a, b, cost in costs:
+        from_to[a].append((b, cost))
+        from_to[b].append((a, cost))
 
-    
-    for i in costs:
-        # print(i)
-        if not(graph[i[0]] and graph[i[1]]):
-            answer += i[2]
-            graph[i[0]].append(i[1])
-            graph[i[1]].append(i[0])
-        else:
-            continue
-        # print(graph)
+    hq.heappush(priority, (0, 0))
+    while False in visited:
+        cost, start = hq.heappop(priority)
+        print(priority)
+        if visited[start]: continue
 
-    def CheckComplete(target):
-        visited = [False]*n
-        queue = deque(target[0])
-        visited[0] = True
-        print(queue)
-        while queue:
-            v = queue.popleft()
-            print(target[v])
-            visited[v] = True
-            for i in target[v]:
-                if not visited[i]:
-                    queue.append(i)
-                    visited[i] = True
-        return visited
-
-    ls = CheckComplete(graph)
-    print(ls)
-    while not all(ls):
-        for i in costs:
-            print(i)
-            if ls[i[0]] != ls[i[1]]:
-                answer += i[2]
-                graph[i[0]].append(i[1])
-                graph[i[1]].append(i[0])
-                break        
-        ls = CheckComplete(graph)
-
+        visited[start] = True
+        answer += cost
+        for end, cost in from_to[start]:
+            if visited[end] : continue
+            else:
+                hq.heappush(priority, (cost, end))
 
     return answer
